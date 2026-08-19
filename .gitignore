@@ -1,0 +1,10 @@
+# Local config — never commit real endpoints/secrets
+.env
+.mcp.json
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OS
+.DS_Store

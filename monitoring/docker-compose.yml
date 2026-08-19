@@ -1,0 +1,64 @@
+# Optional Grafana + Prometheus dashboards for Satisfactory, driven by the
+# FicsitRemoteMonitoringCompanion exporter (https://github.com/AP-Hunt/FicsitRemoteMonitoringCompanion).
+#
+# This is independent of the MCP connector — use it if you want visual dashboards
+# alongside (or instead of) the agent. Grafana is file-provisioned: the datasource
+# and dashboards under ./grafana are the source of truth (edit the JSON, not the DB).
+#
+# Quickstart: copy ../.env.example to ./.env, set FRM_HOST to your game PC, then:
+#   docker compose up -d
+# Grafana → http://localhost:3031  (admin / GF_SECURITY_ADMIN_PASSWORD)
+name: satisfactory-monitoring
+
+services:
+  frm-exporter:
+    image: ghcr.io/ap-hunt/ficsitremotemonitoringcompanion:latest
+    container_name: frm-exporter
+    restart: unless-stopped
+    command:
+      - "/app/companion"
+      - "-hostname"
+      - "${FRM_HOST:-127.0.0.1}"
+      - "-port"
+      - "${FRM_PORT:-8080}"
+    ports:
+      - "9000:9000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: frm-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=${PROM_RETENTION:-30d}"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: frm-grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:-admin}
+      # Set GF_SECURITY_ADMIN_PASSWORD in .env — don't ship admin/admin.
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+    ports:
+      - "3031:3000"
+    depends_on:
+      - prometheus
+
+# Plain named volumes — Docker creates them on first `up`. (The homelab deployment
+# used external volumes to preserve history across a migration; a fresh install
+# doesn't need that.)
+volumes:
+  prometheus-data:
+  grafana-data:

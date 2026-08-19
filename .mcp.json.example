@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "satisfactory": { "type": "sse", "url": "http://localhost:8029/sse" }
+  }
+}

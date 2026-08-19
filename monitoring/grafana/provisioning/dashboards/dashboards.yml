@@ -1,0 +1,13 @@
+apiVersion: 1
+
+# File provider — dashboards live as JSON under /etc/grafana/dashboards.
+# allowUiUpdates lets you tweak in the UI; export the JSON back into the repo to
+# keep it the source of truth.
+providers:
+  - name: 'satisfactory'
+    type: file
+    allowUiUpdates: true
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards
+      foldersFromFilesStructure: false

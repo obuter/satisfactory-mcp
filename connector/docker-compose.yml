@@ -1,0 +1,18 @@
+# Satisfactory MCP connector — read-only client for the Ficsit Remote Monitoring
+# (FRM) mod's JSON API. Copy .env.example to .env and set FRM_HOST to your game
+# PC's address, then: docker compose up -d
+services:
+  satisfactory-mcp:
+    build: .
+    container_name: satisfactory-mcp
+    ports:
+      - "8029:8029"
+    environment:
+      - CONNECTOR_NAME=satisfactory
+      - PORT=8029
+      # The machine running Satisfactory with the FRM mod (host:port of its API).
+      - FRM_HOST=${FRM_HOST:-127.0.0.1}
+      - FRM_PORT=${FRM_PORT:-8080}
+      - FRM_TIMEOUT=${FRM_TIMEOUT:-10}
+      - MAX_OUTPUT_CHARS=${MAX_OUTPUT_CHARS:-8000}
+    restart: unless-stopped
