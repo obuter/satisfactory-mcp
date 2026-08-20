@@ -1,6 +1,6 @@
 {
   "uid": "frm-production",
-  "title": "Satisfactory \u00b7 Production",
+  "title": "Satisfactory · Production",
   "tags": [
     "satisfactory",
     "frm",
@@ -48,6 +48,19 @@
   "panels": [
     {
       "id": 1,
+      "type": "row",
+      "title": "Item balance",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
       "type": "stat",
       "title": "Items in Deficit",
       "datasource": {
@@ -58,7 +71,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -66,74 +79,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "count((items_consumed_per_min{session_name=~\"$session\"} - items_produced_per_min{session_name=~\"$session\"}) > 0.5)",
-          "refId": "A",
-          "editorMode": "code",
-          "range": true,
-          "instant": false,
-          "format": "time_series"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 1
-              }
-            ]
-          },
-          "custom": {},
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto"
-      }
-    },
-    {
-      "id": 2,
-      "type": "stat",
-      "title": "Items Stalled (0 prod, >0 demand)",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 6,
-        "y": 0
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "count(items_produced_per_min{session_name=~\"$session\"} == 0 and items_consumed_per_min{session_name=~\"$session\"} > 0)",
+          "expr": "count((items_consumed_per_min{session_name=~\"$session\"} - items_produced_per_min{session_name=~\"$session\"}) > 0.5) or vector(0)",
           "refId": "A",
           "editorMode": "code",
           "range": true,
@@ -183,6 +129,73 @@
     {
       "id": 3,
       "type": "stat",
+      "title": "Items Stalled (0 prod, >0 demand)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "count(items_produced_per_min{session_name=~\"$session\"} == 0 and items_consumed_per_min{session_name=~\"$session\"} > 0) or vector(0)",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {},
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
       "title": "Items Tracked",
       "datasource": {
         "type": "prometheus",
@@ -192,7 +205,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -244,7 +257,7 @@
       }
     },
     {
-      "id": 4,
+      "id": 5,
       "type": "stat",
       "title": "Avg Producer Efficiency",
       "datasource": {
@@ -255,7 +268,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -281,26 +294,18 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 50
-              },
-              {
                 "color": "green",
-                "value": 95
+                "value": null
               }
             ]
           },
           "custom": {},
-          "decimals": 0
+          "decimals": 1
         },
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "textMode": "auto",
@@ -315,7 +320,7 @@
       }
     },
     {
-      "id": 5,
+      "id": 6,
       "type": "table",
       "title": "Production balance (sorted: worst deficit first)",
       "datasource": {
@@ -326,7 +331,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 5
       },
       "targets": [
         {
@@ -378,47 +383,135 @@
           "format": "table"
         }
       ],
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "Time 1": true,
-              "Time 2": true,
-              "Time 3": true,
-              "Time 4": true,
-              "__name__": true,
-              "instance": true,
-              "job": true,
-              "url": true,
-              "session_name": true
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
             },
-            "renameByName": {
-              "item_name": "Item",
-              "Value #A": "Net /min",
-              "Value #B": "Produced /min",
-              "Value #C": "Consumed /min",
-              "Value #D": "Efficiency %"
-            },
-            "indexByName": {}
+            "filterable": true
           }
         },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "footer": {
+          "show": false
+        }
+      }
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Machine clocks — idle vs your intentional underclocks vs pegged",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "panels": []
+    },
+    {
+      "id": 8,
+      "type": "stat",
+      "title": "Idle (0% clock)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
         {
-          "id": "sortBy",
-          "options": {
-            "fields": {},
-            "sort": [
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "count(machine_items_produced_pc{session_name=~\"$session\"} == 0) or vector(0)",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "field": "Net /min",
-                "desc": false
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 50
               }
             ]
-          }
+          },
+          "custom": {},
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 9,
+      "type": "stat",
+      "title": "Underclocked (0–99%) — your style",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 16
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "count(machine_items_produced_pc{session_name=~\"$session\"} > 0 and machine_items_produced_pc{session_name=~\"$session\"} < 99.5) or vector(0)",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
         }
       ],
       "fieldConfig": {
@@ -436,50 +529,39 @@
               }
             ]
           },
-          "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "filterable": true
-          }
+          "custom": {},
+          "decimals": 0
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Efficiency %"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "options": {
-        "showHeader": true,
-        "cellHeight": "sm",
-        "footer": {
-          "show": false
-        }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto"
       }
     },
     {
-      "id": 6,
-      "type": "bargauge",
-      "title": "Lowest-efficiency producers (bottom 15)",
+      "id": 10,
+      "type": "stat",
+      "title": "Pegged at 100% (may need underclocking)",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 14
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 16
       },
       "targets": [
         {
@@ -487,13 +569,79 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "bottomk(15, item_production_capacity_pc{session_name=~\"$session\"})",
+          "expr": "count(machine_items_produced_pc{session_name=~\"$session\"} >= 99.5) or vector(0)",
           "refId": "A",
           "editorMode": "code",
-          "range": false,
-          "instant": true,
-          "format": "time_series",
-          "legendFormat": "{{item_name}}"
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {},
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 11,
+      "type": "stat",
+      "title": "Avg Machine Clock",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 16
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "avg(machine_items_produced_pc{session_name=~\"$session\"})",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
         }
       ],
       "fieldConfig": {
@@ -506,52 +654,44 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 50
-              },
-              {
                 "color": "green",
-                "value": 95
+                "value": null
               }
             ]
           },
           "custom": {},
-          "max": 100,
-          "min": 0
+          "decimals": 1
         },
         "overrides": []
       },
       "options": {
-        "displayMode": "gradient",
-        "orientation": "horizontal",
-        "showUnfilled": true,
-        "valueMode": "color",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
           ],
           "fields": "",
           "values": false
-        }
+        },
+        "orientation": "auto"
       }
     },
     {
-      "id": 7,
-      "type": "timeseries",
-      "title": "Top consumers (units/min)",
+      "id": 12,
+      "type": "histogram",
+      "title": "Machine clock distribution  (look for clusters at 88.8% / 96%)",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 14
+        "w": 24,
+        "x": 0,
+        "y": 20
       },
       "targets": [
         {
@@ -559,56 +699,32 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "topk(10, items_consumed_per_min{session_name=~\"$session\"})",
+          "expr": "machine_items_produced_pc{session_name=~\"$session\"}",
           "refId": "A",
           "editorMode": "code",
-          "range": true,
-          "instant": false,
-          "format": "time_series",
-          "legendFormat": "{{item_name}}"
+          "range": false,
+          "instant": true,
+          "format": "time_series"
         }
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "percent",
+          "custom": {
+            "fillOpacity": 70
+          },
           "color": {
             "mode": "palette-classic"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "custom": {
-            "drawStyle": "line",
-            "lineInterpolation": "smooth",
-            "lineWidth": 2,
-            "fillOpacity": 5,
-            "gradientMode": "opacity",
-            "spanNulls": true,
-            "showPoints": "never",
-            "stacking": {
-              "mode": "none",
-              "group": "A"
-            },
-            "axisPlacement": "auto"
           }
         },
         "overrides": []
       },
       "options": {
+        "bucketSize": 5,
+        "combine": false,
         "legend": {
           "displayMode": "list",
-          "placement": "bottom",
-          "calcs": []
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "desc"
+          "placement": "bottom"
         }
       }
     }

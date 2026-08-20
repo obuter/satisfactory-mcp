@@ -1,6 +1,6 @@
 {
   "uid": "frm-power",
-  "title": "Satisfactory \u00b7 Power",
+  "title": "Satisfactory · Power",
   "tags": [
     "satisfactory",
     "frm",
@@ -51,7 +51,7 @@
           "uid": "PBFA97CFB590B2093"
         },
         "query": {
-          "query": "label_values(power_capacity, circuit_id)",
+          "query": "label_values(power_capacity{power_capacity!=\"0\"}, circuit_id)",
           "refId": "A"
         },
         "refresh": 2,
@@ -70,6 +70,19 @@
   "panels": [
     {
       "id": 1,
+      "type": "row",
+      "title": "Grid health",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
       "type": "stat",
       "title": "Fuses Tripped",
       "datasource": {
@@ -80,7 +93,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -136,7 +149,7 @@
       }
     },
     {
-      "id": 2,
+      "id": 3,
       "type": "stat",
       "title": "Total Draw",
       "datasource": {
@@ -147,7 +160,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -156,69 +169,6 @@
             "uid": "PBFA97CFB590B2093"
           },
           "expr": "sum(power_consumed{session_name=~\"$session\"})",
-          "refId": "A",
-          "editorMode": "code",
-          "range": true,
-          "instant": false,
-          "format": "time_series"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "MW",
-          "color": {
-            "mode": "palette-classic"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "custom": {},
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "orientation": "auto"
-      }
-    },
-    {
-      "id": 3,
-      "type": "stat",
-      "title": "Total Capacity",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 6,
-        "x": 12,
-        "y": 0
-      },
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "expr": "sum(power_capacity{session_name=~\"$session\"})",
           "refId": "A",
           "editorMode": "code",
           "range": true,
@@ -272,8 +222,8 @@
       "gridPos": {
         "h": 4,
         "w": 6,
-        "x": 18,
-        "y": 0
+        "x": 12,
+        "y": 1
       },
       "targets": [
         {
@@ -334,8 +284,88 @@
     },
     {
       "id": 5,
+      "type": "stat",
+      "title": "Circuits Over Capacity (peak)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "count(power_max_consumed{session_name=~\"$session\"} > power_capacity{session_name=~\"$session\"} and power_capacity{session_name=~\"$session\"} > 0) or vector(0)",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "custom": {},
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "textMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "orientation": "auto"
+      }
+    },
+    {
+      "id": 6,
+      "type": "row",
+      "title": "Dual-grid: steady production line vs spiky variable line",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "id": 7,
       "type": "timeseries",
-      "title": "Consumption by circuit",
+      "title": "Power by system type — steady vs spike",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -344,7 +374,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 4
+        "y": 6
       },
       "targets": [
         {
@@ -352,7 +382,209 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "power_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"}",
+          "expr": "sum(factory_power{session_name=~\"$session\"})",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "legendFormat": "Production machines (steady)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(extractor_power{session_name=~\"$session\"}) + sum(fracking_power{session_name=~\"$session\"}) + sum(pump_power{session_name=~\"$session\"})",
+          "refId": "B",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "legendFormat": "Extraction + pumps (steady)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(resource_sink_power{session_name=~\"$session\"})",
+          "refId": "C",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "legendFormat": "AWESOME Sink (spike)"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "sum(train_station_power{session_name=~\"$session\"}) + sum(vehicle_station_power{session_name=~\"$session\"})",
+          "refId": "D",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "legendFormat": "Train + truck stations (spike)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "MW",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "gradientMode": "opacity",
+            "spanNulls": true,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "type": "bargauge",
+      "title": "Peak ÷ current draw per circuit  (1.0 = flat = the goal)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "(power_max_consumed{session_name=~\"$session\"} / power_consumed{session_name=~\"$session\"}) and (power_consumed{session_name=~\"$session\"} > 10)",
+          "refId": "A",
+          "editorMode": "code",
+          "range": false,
+          "instant": true,
+          "format": "time_series",
+          "legendFormat": "circuit {{circuit_id}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1.5
+              },
+              {
+                "color": "red",
+                "value": 2
+              }
+            ]
+          },
+          "custom": {},
+          "min": 0,
+          "decimals": 2,
+          "max": 4
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "valueMode": "color",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": "row",
+      "title": "Per active circuit  (dead / switched-off circuits filtered out)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "panels": []
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Consumption by active circuit",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "power_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"} and power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"} > 0",
           "refId": "A",
           "editorMode": "code",
           "range": true,
@@ -410,9 +642,9 @@
       }
     },
     {
-      "id": 6,
+      "id": 11,
       "type": "timeseries",
-      "title": "Capacity vs peak draw by circuit",
+      "title": "Capacity vs peak draw (active circuits)",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -421,7 +653,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 4
+        "y": 16
       },
       "targets": [
         {
@@ -429,7 +661,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"}",
+          "expr": "power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"} and power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"} > 0",
           "refId": "A",
           "editorMode": "code",
           "range": true,
@@ -442,7 +674,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "power_max_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"}",
+          "expr": "power_max_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"} and power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"} > 0",
           "refId": "B",
           "editorMode": "code",
           "range": true,
@@ -485,7 +717,7 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
           "calcs": []
         },
@@ -496,9 +728,9 @@
       }
     },
     {
-      "id": 7,
+      "id": 12,
       "type": "bargauge",
-      "title": "Circuit load % (consumed / capacity)",
+      "title": "Circuit load %  (consumed / capacity)",
       "datasource": {
         "type": "prometheus",
         "uid": "PBFA97CFB590B2093"
@@ -507,7 +739,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 25
       },
       "targets": [
         {
@@ -515,7 +747,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "(power_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"} / power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"}) * 100",
+          "expr": "(power_consumed{session_name=~\"$session\",circuit_id=~\"$circuit\"} / power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"}) * 100 and power_capacity{session_name=~\"$session\",circuit_id=~\"$circuit\"} > 0",
           "refId": "A",
           "editorMode": "code",
           "range": false,
@@ -548,8 +780,9 @@
             ]
           },
           "custom": {},
-          "max": 100,
-          "min": 0
+          "min": 0,
+          "decimals": 1,
+          "max": 100
         },
         "overrides": []
       },
@@ -568,7 +801,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 13,
       "type": "timeseries",
       "title": "Battery charge % by circuit",
       "datasource": {
@@ -579,7 +812,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 13
+        "y": 25
       },
       "targets": [
         {
@@ -630,9 +863,13 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "calcs": []
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         },
         "tooltip": {
           "mode": "multi",

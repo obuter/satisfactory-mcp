@@ -1,6 +1,6 @@
 {
   "uid": "frm-logistics",
-  "title": "Satisfactory \u00b7 Logistics",
+  "title": "Satisfactory · Logistics",
   "tags": [
     "satisfactory",
     "frm",
@@ -48,6 +48,19 @@
   "panels": [
     {
       "id": 1,
+      "type": "row",
+      "title": "Fleet health",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "panels": []
+    },
+    {
+      "id": 2,
       "type": "stat",
       "title": "Vehicles",
       "datasource": {
@@ -58,7 +71,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -110,7 +123,7 @@
       }
     },
     {
-      "id": 2,
+      "id": 3,
       "type": "stat",
       "title": "Vehicles Out of Fuel",
       "datasource": {
@@ -121,7 +134,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -177,7 +190,7 @@
       }
     },
     {
-      "id": 3,
+      "id": 4,
       "type": "stat",
       "title": "Trains Derailed",
       "datasource": {
@@ -188,7 +201,7 @@
         "h": 4,
         "w": 6,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -196,7 +209,7 @@
             "type": "prometheus",
             "uid": "PBFA97CFB590B2093"
           },
-          "expr": "sum(train_derailed{session_name=~\"$session\"})",
+          "expr": "sum(train_derailed{session_name=~\"$session\"}) or vector(0)",
           "refId": "A",
           "editorMode": "code",
           "range": true,
@@ -244,7 +257,7 @@
       }
     },
     {
-      "id": 4,
+      "id": 5,
       "type": "stat",
       "title": "Avg Train Round Trip",
       "datasource": {
@@ -255,7 +268,7 @@
         "h": 4,
         "w": 6,
         "x": 18,
-        "y": 0
+        "y": 1
       },
       "targets": [
         {
@@ -307,7 +320,20 @@
       }
     },
     {
-      "id": 5,
+      "id": 6,
+      "type": "row",
+      "title": "Trains",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "panels": []
+    },
+    {
+      "id": 7,
       "type": "timeseries",
       "title": "Train round-trip time",
       "datasource": {
@@ -318,7 +344,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 4
+        "y": 6
       },
       "targets": [
         {
@@ -354,7 +380,7 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 0,
+            "fillOpacity": 10,
             "gradientMode": "opacity",
             "spanNulls": true,
             "showPoints": "never",
@@ -369,9 +395,13 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "calcs": []
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         },
         "tooltip": {
           "mode": "multi",
@@ -380,7 +410,7 @@
       }
     },
     {
-      "id": 6,
+      "id": 8,
       "type": "timeseries",
       "title": "Train payload vs capacity",
       "datasource": {
@@ -391,7 +421,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 4
+        "y": 6
       },
       "targets": [
         {
@@ -418,7 +448,7 @@
           "range": true,
           "instant": false,
           "format": "time_series",
-          "legendFormat": "max {{name}}"
+          "legendFormat": "capacity {{name}}"
         }
       ],
       "fieldConfig": {
@@ -440,7 +470,7 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 5,
+            "fillOpacity": 10,
             "gradientMode": "opacity",
             "spanNulls": true,
             "showPoints": "never",
@@ -455,9 +485,13 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "calcs": []
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         },
         "tooltip": {
           "mode": "multi",
@@ -466,7 +500,97 @@
       }
     },
     {
-      "id": 7,
+      "id": 9,
+      "type": "row",
+      "title": "Vehicles — long round trips = full loads (unloading-timer rule)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "panels": []
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Vehicle round-trip time (by vehicle)",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "expr": "vehicle_round_trip_seconds{session_name=~\"$session\"} > 0",
+          "refId": "A",
+          "editorMode": "code",
+          "range": true,
+          "instant": false,
+          "format": "time_series",
+          "legendFormat": "{{vehicle_type}} {{id}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "spanNulls": true,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "none",
+              "group": "A"
+            },
+            "axisPlacement": "auto"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      }
+    },
+    {
+      "id": 11,
       "type": "timeseries",
       "title": "Vehicle fuel level (by vehicle)",
       "datasource": {
@@ -475,9 +599,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 16,
-        "x": 0,
-        "y": 13
+        "w": 12,
+        "x": 12,
+        "y": 16
       },
       "targets": [
         {
@@ -496,7 +620,7 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "percent",
           "color": {
             "mode": "palette-classic"
           },
@@ -513,7 +637,7 @@
             "drawStyle": "line",
             "lineInterpolation": "smooth",
             "lineWidth": 2,
-            "fillOpacity": 0,
+            "fillOpacity": 10,
             "gradientMode": "opacity",
             "spanNulls": true,
             "showPoints": "never",
@@ -528,9 +652,13 @@
       },
       "options": {
         "legend": {
-          "displayMode": "list",
+          "displayMode": "table",
           "placement": "bottom",
-          "calcs": []
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
         },
         "tooltip": {
           "mode": "multi",
@@ -539,7 +667,7 @@
       }
     },
     {
-      "id": 8,
+      "id": 12,
       "type": "bargauge",
       "title": "Vehicles lowest on fuel",
       "datasource": {
@@ -547,10 +675,10 @@
         "uid": "PBFA97CFB590B2093"
       },
       "gridPos": {
-        "h": 9,
-        "w": 8,
-        "x": 16,
-        "y": 13
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 25
       },
       "targets": [
         {
@@ -569,7 +697,7 @@
       ],
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "percent",
           "color": {
             "mode": "palette-classic"
           },
@@ -582,7 +710,7 @@
               },
               {
                 "color": "orange",
-                "value": 20
+                "value": 25
               },
               {
                 "color": "green",
@@ -591,8 +719,9 @@
             ]
           },
           "custom": {},
-          "max": 100,
-          "min": 0
+          "min": 0,
+          "decimals": 1,
+          "max": 100
         },
         "overrides": []
       },
