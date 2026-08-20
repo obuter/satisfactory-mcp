@@ -832,7 +832,26 @@
         "footer": {
           "show": false
         }
-      }
+      },
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "instance": true,
+              "job": true,
+              "session_name": true,
+              "url": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ]
     }
   ]
 }

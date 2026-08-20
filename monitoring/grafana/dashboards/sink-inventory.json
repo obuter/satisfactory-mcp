@@ -1,6 +1,6 @@
 {
   "uid": "frm-sink-inv",
-  "title": "Satisfactory \u00b7 Sink & Inventory",
+  "title": "Satisfactory · Sink & Inventory",
   "tags": [
     "satisfactory",
     "frm",
@@ -411,28 +411,6 @@
       ],
       "transformations": [
         {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "instance": true,
-              "job": true,
-              "url": true,
-              "session_name": true
-            },
-            "renameByName": {
-              "item_name": "Item",
-              "Value": "Amount"
-            },
-            "indexByName": {}
-          }
-        },
-        {
           "id": "sortBy",
           "options": {
             "fields": {},
@@ -442,6 +420,23 @@
                 "desc": true
               }
             ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "instance": true,
+              "job": true,
+              "session_name": true,
+              "url": true
+            },
+            "indexByName": {},
+            "renameByName": {}
           }
         }
       ],
@@ -521,28 +516,6 @@
       ],
       "transformations": [
         {
-          "id": "merge",
-          "options": {}
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true,
-              "__name__": true,
-              "instance": true,
-              "job": true,
-              "url": true,
-              "session_name": true
-            },
-            "renameByName": {
-              "item_name": "Item",
-              "Value": "Amount"
-            },
-            "indexByName": {}
-          }
-        },
-        {
           "id": "sortBy",
           "options": {
             "fields": {},
@@ -552,6 +525,23 @@
                 "desc": true
               }
             ]
+          }
+        },
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "instance": true,
+              "job": true,
+              "session_name": true,
+              "url": true
+            },
+            "indexByName": {},
+            "renameByName": {}
           }
         }
       ],
